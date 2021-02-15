@@ -1,34 +1,36 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../model/user')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+require('dotenv').config()
 
 
-
-const test = [{
-    email: 'email',
-    password: 'password'
-}]
-
-
-
+const hash = 'çajksdnasjldb38a4sd38a5d4385a4sd35as1'
 router.post('/register', async (req, res) => {
-    const { email, password } = req.body
-    // test.push({
-    //         email: email,
-    //         password: password
-    //     })
-    // res.send({ ok: 'ok' })
-    if (await User.findOne({ email })) {
-        console.log('usuario ja cadastrado')
+    const { email, name, password } = req.body
 
-        return res.send({ error: 'email ja cadastrado' })
-    } else {
+    try {
+        console.log(email, name, password )
 
-        const userInfo = await User.create(req.body)
+        if (await User.findOne({ email })) {
+            console.log('usuario ja cadastrado')
+
+            return res.send({ error: 'email ja cadastrado' })
+        } else {
+
+            const userInfo = await User.create(req.body)
+            userInfo.password = undefined
 
 
-        console.log('usuario cadastrado com suceso')
-        return res.send({ userInfo })
+            console.log('usuario cadastrado com suceso')
+
+            const token = jwt.sign({ id: userInfo.id }, process.env.TOKEN_HASH, { expiresIn: 12000 })
+            return res.send({ userInfo, token })
+        }
+    } catch (err) {
+        console.log(err)
+        return res.send({ error: 'Registration fail' })
     }
 
 })
@@ -36,27 +38,26 @@ router.post('/register', async (req, res) => {
 
 router.post('/authenticate', async (req, res) => {
     const { email, password } = req.body
-    // test.forEach((e) => {
-    //     if(e.email == email && e.password == password){
-    //         return res.send({ ok: 'ok' })
-    //     }
-    // })
-    // res.send({ ok: 'error' })
-    const userInfo = await User.findOne({ email }).select('+password')
 
+    
+    console.log(req.body)
+    const userInfo = await User.findOne({ email }).select('+password')
     if (!userInfo) {
         return res.send({ error: 'usuario nao encontrado' })
     }
     else {
-        if (userInfo.password === password) {
+        if (await bcrypt.compare(password, userInfo.password)) {
             userInfo.password = undefined
+            const token = jwt.sign({ email: userInfo.email }, process.env.TOKEN_HASH, { expiresIn: 12000 })
+            console.log('aqui')
 
-            return res.send({ userInfo, ok: 'ok' })
+            return res.send({ userInfo, token })
         } else {
+            console.log('error')
             return res.send({ error: 'senha incompativel' })
         }
     }
-    
+
 
 
 
