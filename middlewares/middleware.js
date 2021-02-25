@@ -42,7 +42,6 @@ async function getGeolocation(req, res, next) {
 async function authenticateHost(req, res, next) {
 
     const orign = process.env.URL_HOST || 'http://localhost:3000/'
-    console.log(orign)
 
     if(req.headers.referer == orign){
         next()

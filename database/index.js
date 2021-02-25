@@ -1,9 +1,9 @@
 const mongoose = require('mongoose')
+require('dotenv').config()
 
 mongoose.Promise = global.Promise
 
-let db = 'mongodb://localhost/example'
-
+let db = process.env.MONGO_DB_ACESS?process.env.MONGO_DB_ACESS:'mongodb://localhost/SignUser'
 mongoose.connect(db, {useNewUrlParser: true, useUnifiedTopology: true})
 .then( () => {
         console.log('mongoDB started ')

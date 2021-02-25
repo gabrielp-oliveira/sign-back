@@ -13,7 +13,6 @@ router.post('/register', authenticateHost, async (req, res) => {
     const { email, name, password } = req.body
 
     try {
-        console.log(email, name, password)
         if (!email && !name && !password) return res.send({ error: 'Please, fill the fields below.' })
         if (!name) return res.send({ error: 'Name field is empty' })
         else if (name.length <= 3) return res.send({ error: 'Name too short' })
@@ -35,7 +34,6 @@ router.post('/register', authenticateHost, async (req, res) => {
             return res.send({ userInfo, token })
         }
     } catch (err) {
-        console.log(err)
         return res.send({ error: 'Registration fail' })
     }
 
@@ -57,7 +55,7 @@ router.post('/authenticate', authenticateHost, async (req, res) => {
     else {
         if (await bcrypt.compare(password, userInfo.password)) {
             userInfo.password = undefined
-            const token = jwt.sign({ email: userInfo.email }, process.env.TOKEN_HASH, { expiresIn: 12000 })
+            const token = jwt.sign({ email: userInfo.email }, process.env.TOKEN_HASH, { expiresIn: 1200 })
 
             return res.send({ userInfo, token })
         } else {

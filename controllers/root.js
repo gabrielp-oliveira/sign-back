@@ -85,7 +85,6 @@ router.post('/query',authenticateHost, getGeolocation, async (req, resp) => {
 
 
     } catch (error) {
-        console.log('/query ', error)
         resp.send({ error })
     }
     // resp.send(result)
