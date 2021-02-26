@@ -9,7 +9,7 @@ const { validateEmail } = require('../utils/regex')
 
 const {authenticateHost} = require('../middlewares/middleware')
 
-router.post('/register', authenticateHost, async (req, res) => {
+router.post('/register',  async (req, res) => {
     const { email, name, password } = req.body
 
     try {
@@ -40,7 +40,7 @@ router.post('/register', authenticateHost, async (req, res) => {
 })
 
 
-router.post('/authenticate', authenticateHost, async (req, res) => {
+router.post('/authenticate',  async (req, res) => {
     const { email, password } = req.body
 
     if (!email && !password) return res.send({ error: 'Please, fill the fields below.' })

@@ -45,7 +45,7 @@ const search = (name, lat, long, place, place_code, year, mouth, date, Timezone)
 
 
 
-router.post('/query',authenticateHost, getGeolocation, async (req, resp) => {
+router.post('/query', getGeolocation, async (req, resp) => {
 
     const { latitude, longitude, name, region_code } = req.data
     const { person, city, Timezone, queryId } = req.body
@@ -93,7 +93,7 @@ router.post('/query',authenticateHost, getGeolocation, async (req, resp) => {
 
 
 
-router.get('/',authenticateHost, authenticateToken, async (req, resp) => {
+router.get('/', authenticateToken, async (req, resp) => {
     try {
         const User_ID = req.query.id
 
@@ -112,7 +112,7 @@ router.get('/',authenticateHost, authenticateToken, async (req, resp) => {
 
 
 
-router.get('/delete/query',authenticateHost, authenticateToken, async (req, resp) => {
+router.get('/delete/query', authenticateToken, async (req, resp) => {
     const { User_ID, query_ID } = req.query
 
 

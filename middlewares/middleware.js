@@ -39,20 +39,20 @@ async function getGeolocation(req, res, next) {
     }
     
 }
-async function authenticateHost(req, res, next) {
+// async function authenticateHost(req, res, next) {
 
-    const orign = process.env.URL_HOST || 'http://localhost:3000/'
+//     const orign = process.env.URL_HOST || 'http://localhost:3000/'
 
-    if(req.headers.referer == orign){
-        next()
-    }else{
-        return res.send({ error: 'Host referer error.' });
-    }
+//     if(req.headers.referer == orign){
+//         next()
+//     }else{
+//         return res.send({ error: 'Host referer error.' });
+//     }
 
-}
+// }
 
 module.exports = {
     authenticateToken,
-    getGeolocation,
-    authenticateHost
+    getGeolocation
+    // authenticateHost
 }
