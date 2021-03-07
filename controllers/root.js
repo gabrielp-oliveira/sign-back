@@ -22,7 +22,7 @@ router.get('/users', (req, res) => {
 
 
 
-const search = (name, lat, long, place, place_code, year, mouth, date, Timezone) => {
+const search = (name, lat, long, place, place_code, year, mouth, date, Timezone, hour, minute) => {
     return {
         "name": name,
         "place": {
@@ -34,8 +34,8 @@ const search = (name, lat, long, place, place_code, year, mouth, date, Timezone)
         "year": year,
         "month": mouth,
         "date": date,
-        "hour": 23,
-        "minutes": 30,
+        "hour": hour,
+        "minutes": minute,
         "seconds": 0,
         "options": {
             "Ayanamsa": "LAHARI"
@@ -48,7 +48,7 @@ const search = (name, lat, long, place, place_code, year, mouth, date, Timezone)
 router.post('/query', getGeolocation, async (req, resp) => {
 
     const { latitude, longitude, name, region_code } = req.data
-    const { person, city, Timezone, queryId } = req.body
+    const { person, city, Timezone, queryId, minute, hour } = req.body
     const [year, month, date] = req.body.dateOfBirth.split('-')
 
     const Userdata = await User.findOne({ _id: req.body.id })
@@ -60,10 +60,16 @@ router.post('/query', getGeolocation, async (req, resp) => {
 
         await axios(
             request_horoscopo(
-                search(person, latitude, longitude, name, region_code, year, month, date, Timezone)
+                search(person,
+                parseFloat(latitude.toFixed(2)),
+                parseFloat(longitude.toFixed(2)) , name, region_code,
+                parseInt(year), parseInt(month),
+                parseInt(date), Timezone,
+                parseInt(hour), parseInt(minute))
             ))
             .then((data) => {
                 data.data.planetaryInfo.person = person
+                data.data.planetaryInfo.hour = `${hour}:${minute}`
                 data.data.planetaryInfo.queryId = queryId
                 data.data.planetaryInfo.dateOfBirth = req.body.dateOfBirth
                 resp.json(data.data.planetaryInfo)
@@ -87,7 +93,6 @@ router.post('/query', getGeolocation, async (req, resp) => {
     } catch (error) {
         resp.send({ error })
     }
-    // resp.send(result)
 })
 
 

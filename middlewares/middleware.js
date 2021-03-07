@@ -16,7 +16,7 @@ async function authenticateToken(req, res, next) {
 
     jwt.verify(token[1], process.env.TOKEN_HASH, (err, useres) => {
         if (err) {
-            return res.status(401).send({})
+            return res.send({error: 'jwt expired'})
         }
         req.user = useres
         next()

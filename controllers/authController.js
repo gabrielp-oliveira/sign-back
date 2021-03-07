@@ -7,7 +7,7 @@ require('dotenv').config()
 
 const { validateEmail } = require('../utils/regex')
 
-const {authenticateHost} = require('../middlewares/middleware')
+// const {authenticateHost} = require('../middlewares/middleware')
 
 router.post('/register',  async (req, res) => {
     const { email, name, password } = req.body
@@ -30,7 +30,7 @@ router.post('/register',  async (req, res) => {
             const userInfo = await User.create(req.body)
             userInfo.password = undefined
 
-            const token = jwt.sign({ id: userInfo.id }, process.env.TOKEN_HASH, { expiresIn: 12000 })
+            const token = jwt.sign({ id: userInfo.id }, process.env.TOKEN_HASH, { expiresIn: 44000 })
             return res.send({ userInfo, token })
         }
     } catch (err) {
@@ -55,7 +55,7 @@ router.post('/authenticate',  async (req, res) => {
     else {
         if (await bcrypt.compare(password, userInfo.password)) {
             userInfo.password = undefined
-            const token = jwt.sign({ email: userInfo.email }, process.env.TOKEN_HASH, { expiresIn: 1200 })
+            const token = jwt.sign({ email: userInfo.email }, process.env.TOKEN_HASH, { expiresIn: 44000 })
 
             return res.send({ userInfo, token })
         } else {
